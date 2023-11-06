@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -71,10 +70,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/signup").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/api//send-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/api//verify-email").permitAll() // 이메일 엔드포인트 허용
+                .antMatchers("/book/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
                 .antMatchers("/users/**").hasRole("USER") // USER 권한을 가진 사용자만 접근 허용
                 .antMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한을 가진 사용자만 접근 허용
                 .anyRequest().authenticated(); // 다른 모든 요청은 인증이 필요
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class BookDTO {
-    private int bookNo;
+    private int id;
     private String title;
     private String author;
     private String publisher;
@@ -17,12 +18,8 @@ public class BookDTO {
     private String imageUrl;
     private String contentUrl;
     private String summary;
-    private double price;
+    private int price;
     private Date publishYear;
-    private Date entry;
+    private Date entryTime;
     private int purchaseCount;
-
-    // 조영준: 생성자가 먹지 않아서 임시로 작성
-    public BookDTO(int id, String title, String author, String publisher, String genre, String imageUrl, String contentUrl, String summary, int price, Date publishYear, Date entryTime, int purchaseCount) {
-    }
 }
