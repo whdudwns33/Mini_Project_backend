@@ -18,7 +18,7 @@ public class MemberDAO {
     private Statement stmt = null;
     private ResultSet rs = null;
     private PreparedStatement pStmt = null;
-    //길종환
+
     public String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -139,7 +139,29 @@ public class MemberDAO {
                 member.setEmail(rs.getString("EMAIL"));
                 member.setTel(rs.getString("TEL"));
                 member.setCash(rs.getInt("CASH"));
+                String role = findRoleById(id);
+                member.setRole(role);
                 return member;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Common.close(rs);
+            Common.close(pStmt);
+            Common.close(conn);
+        }
+        return null;
+    }
+    public String findRoleById(String id) {
+        try {
+            conn = Common.getConnection();
+            String sql = "SELECT AUTH FROM MEMBER WHERE ID = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, id);
+            rs = pStmt.executeQuery();
+            if (rs.next()) {
+                int auth = rs.getInt("AUTH"); // 사용자의 권한 정보를 가져옴
+                return auth == 0 ? "USER" : "ADMIN"; // 권한 정보를 반환
             }
         } catch (Exception e) {
             e.printStackTrace();
