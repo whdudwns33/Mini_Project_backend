@@ -68,6 +68,7 @@ public class MemberDAO {
     // 이름~이메일 입력시 존재하는 지 체크
     public boolean memberCheck(String name, String id, String pw, String email) {
         boolean isChecked = false;
+        System.out.println("이름, 이메일, 아이디, 비번 : 1 : " + isChecked);
         try {
             conn = Common.getConnection();
             stmt = conn.createStatement();
@@ -80,47 +81,55 @@ public class MemberDAO {
             System.out.println("회원 가입 여부 확인 ID : " + id);
             System.out.println("회원 가입 여부 확인 pw : " + pw);
             System.out.println("회원 가입 여부 확인 email : " + email);
-            if(rs.next()) isChecked = true;
-            else isChecked = false;
-            System.out.println(isChecked);
+            if (rs.next()) {
+                isChecked = true;
+            } else {
+                isChecked = false;
+            }
+
+            System.out.println("이름, 이메일, 아이디, 비번 :  2 : " + isChecked);
         } catch(Exception e) {
             e.printStackTrace();
         }
         Common.close(rs);
         Common.close(stmt);
         Common.close(conn);
-        return isChecked;
+        System.out.println("이름, 이메일, 아이디, 비번 :  3 : " + isChecked);
+        return isChecked; // 가입 되어 있으면 false, 가입이 안되어 있으면 true
     }
+
+
 
     // 아이디 변경을 위해 중복 체크
     public boolean isIdcheck(String newId) {
-        // 중복 체크
-        boolean isDup = false;
+        boolean isDuplicate = false;
+        System.out.println("아이디 체크: 1 "+isDuplicate);
+        System.out.println("아이디 체크: 새로운 아이디 : "+newId);
+
         try {
             conn = Common.getConnection();
-            String checkSql = "SELECT COUNT(*) AS count FROM MEMBER WHERE ID = ?";
-            PreparedStatement pstmt = conn.prepareStatement(checkSql);
-            pstmt.setString(1, newId);
-            ResultSet resultSet = pstmt.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getInt("count");
-                if (count == 0) {
-                    System.out.println(isDup);
-                    isDup = true;
-                } else {
-                    System.out.println(isDup);
-                    isDup = false;
-                }
+            String sql = "SELECT COUNT(*) AS count FROM MEMBER WHERE ID = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, newId);
+            rs = pStmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                isDuplicate = (count != 1);
+                System.out.println("아이디 체크: 2 " + isDuplicate);
             }
-            System.out.println(isDup);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return isDup;
+        return isDuplicate;
     }
+
 
     public boolean modifyId( String currentId, String newId) {
         boolean isData = false;
+        System.out.println("아이디 수정: 1 "+isData);
+        System.out.println("아이디 수정: 현제 아이디 " + currentId);
+        System.out.println("아이디 수정: 새로운 아이디 " + newId);
         try {
             conn = Common.getConnection();
             // 아이디 변경을 위한 SQL 쿼리를 작성합니다.
@@ -133,7 +142,7 @@ public class MemberDAO {
 
                 // 업데이트 쿼리를 실행합니다.
                 int rowsUpdated = pstmt.executeUpdate();
-                if (rowsUpdated > 0) {
+                if (rowsUpdated >= 0) {
                     isData = true;
                     System.out.println("아이디 변경 완료");
                 } else {
@@ -206,7 +215,7 @@ public class MemberDAO {
     // 문제 점: try catch 구문의 바깥쪽에 선언된 boolean isData = false;
     // try catch 구문안에서 값을 변화 시키면 변화하지 않음?
     public boolean deleteMember (String getId) {
-        boolean isData = false;
+        boolean isData;
         int rowsUpdated = 0;
         try {
             conn = Common.getConnection();

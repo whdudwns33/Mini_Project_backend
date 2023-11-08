@@ -4,12 +4,14 @@ import com.book.gpt.dto.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Objects;
 
+@Repository
 public class MemberDAO_2 {
     private final JdbcTemplate jdbcTemplate;
     @Autowired

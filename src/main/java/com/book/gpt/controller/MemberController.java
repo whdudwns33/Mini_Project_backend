@@ -81,7 +81,7 @@ public class MemberController {
         String plainPassword = memberDTO.getPassword();
         memberDTO.setPassword(plainPassword);
 
-        if (dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel())) {
+        if (!dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel())) {
             // 회원 가입을 수행
             regResult = dao.signup(memberDTO);
             memberDTO.setRole("ROLE_USER");
@@ -151,7 +151,6 @@ public class MemberController {
     public ResponseEntity<List<MemberDTO>> memberList(@RequestParam String id) {
         System.out.println("id : " + id);
         MemberDAO dao = new MemberDAO();
-
         List<MemberDTO> list = dao.memberInfo(id);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
@@ -169,7 +168,7 @@ public class MemberController {
         String newId = updateId.get("newId");
         MemberDAO dao = new MemberDAO();
         boolean isTrue = dao.modifyId(currentId, newId);
-        System.out.println(isTrue);
+        System.out.println("아이디 최종 변경" + isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
     // 비밀번호 변경
