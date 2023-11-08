@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -47,9 +48,15 @@ public class MemberDAO_2 {
 
     public boolean signupCheck(String id, String email, String phone) {
         String sql = "SELECT * FROM MEMBER WHERE ID = ? OR EMAIL = ? OR TEL = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id, email, phone}, (rs, rowNum) -> !rs.next());
+        List<MemberDTO> results = jdbcTemplate.query(sql, new Object[]{id, email, phone}, (rs, rowNum) -> {
+            MemberDTO member = new MemberDTO();
+            member.setId(rs.getString("ID"));
+            member.setEmail(rs.getString("EMAIL"));
+            member.setTel(rs.getString("TEL"));
+            return member;
+        });
+        return results.isEmpty();
     }
-
     public boolean signup(MemberDTO member) {
         String sql = "INSERT INTO MEMBER(ID, PASSWORD, NAME, EMAIL, TEL, CASH) VALUES(?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql, member.getId(), hashPassword(member.getPassword()), member.getName(), member.getEmail(), member.getTel(), member.getCash()) > 0;
