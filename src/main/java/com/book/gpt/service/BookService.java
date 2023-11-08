@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -25,6 +26,14 @@ public class BookService {
     // 책을 데이터베이스에서 삭제하는 메소드
     public void deleteBook(int id) {
         bookDAO.deleteById(id);
+    }
+
+    public Optional<BookDTO> updateBook(int id, BookDTO bookDTO) {
+        return bookDAO.updateBook(id, bookDTO);
+    }
+
+    public Optional<BookDTO> findBook(int id) {
+        return bookDAO.findBook(id);
     }
 }
 
