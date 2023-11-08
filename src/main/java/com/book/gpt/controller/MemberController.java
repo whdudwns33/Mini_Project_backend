@@ -36,7 +36,6 @@ public class MemberController {
     private PasswordEncoder passwordEncoder;   // Add this line
 
     // 로그인
-    // 로그인
     @PostMapping("/login")
     public ResponseEntity<String> memberLogin(@RequestBody Map<String, String> loginData) {
         String id = loginData.get("id");
@@ -79,7 +78,8 @@ public class MemberController {
 
         // 비밀번호를 해싱해서 저장
         String plainPassword =  memberDTO.getPassword();
-        memberDTO.setPassword(plainPassword);
+        memberDTO.setPassword(dao.hashPassword(plainPassword)); // 해싱된 비밀번호를 저장
+
 
         if (dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel())) {
             // 회원 가입을 수행
