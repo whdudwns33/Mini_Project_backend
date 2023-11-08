@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.*;
@@ -32,159 +35,6 @@ public class MemberDAO {
     private ResultSet rs = null;
     private PreparedStatement pStmt = null;
 
-    public String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder(2 * hashedBytes.length);
-            for (byte b : hashedBytes) {
-                hexString.append(String.format("%02x", b));
-            }
-            return hexString.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public boolean loginCheck(String id, String pwd) {
-        System.out.println(hashPassword(pwd));
-        try {
-            conn = Common.getConnection();
-            String sql = "SELECT * FROM MEMBER WHERE ID = ?";
-            pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, id);
-            rs = pStmt.executeQuery();
-            if (rs.next()) {
-                String sqlPwd = rs.getString("PASSWORD"); // 데이터베이스에서 해싱된 비밀번호를 가져옴
-                String hashedPwd = hashPassword(pwd); // 사용자 입력 비밀번호를 해싱
-
-                System.out.println(hashedPwd);
-                if (hashPassword(sqlPwd).equals(hashedPwd)) {
-                    return true; // 해싱된 비밀번호와 입력한 비밀번호가 일치하면 로그인 성공
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Common.close(rs);
-            Common.close(pStmt);
-            Common.close(conn);
-        }
-        return false;
-    }
-
-
-
-    // 중복값 체크 메서드
-    public boolean signupCheck(String id, String email, String phone) {
-        try {
-            conn = Common.getConnection();
-            String sql = "SELECT * FROM MEMBER WHERE ID = ? OR EMAIL = ? OR TEL = ?";
-            pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, id);
-            pStmt.setString(2, email);
-            pStmt.setString(3, phone);
-            rs = pStmt.executeQuery();
-
-            if (rs.next()) {
-                // 아이디, 이메일 또는 전화번호 중 하나라도 중복되는 경우
-                Common.close(rs);
-                Common.close(pStmt);
-                Common.close(conn);
-                return false;
-            } else {
-                // 중복되는 정보가 없는 경우
-                Common.close(rs);
-                Common.close(pStmt);
-                Common.close(conn);
-
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // 회원가입 완료 메서드
-    // 회원가입 완료 메서드
-    public boolean signup(MemberDTO member) {
-        try {
-            conn = Common.getConnection();
-            String sql = "INSERT INTO MEMBER(ID, PASSWORD, NAME, EMAIL, TEL, CASH) VALUES(?, ?, ?, ?, ?, ?)";
-            pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, member.getId());
-
-            // 비밀번호를 해싱하여 저장
-            String hashedPassword = hashPassword(member.getPassword());
-            pStmt.setString(2, hashedPassword);
-
-            pStmt.setString(3, member.getName());
-            pStmt.setString(4, member.getEmail());
-            pStmt.setString(5, member.getTel());
-            pStmt.setInt(6, member.getCash());
-
-            int rowsAffected = pStmt.executeUpdate();
-
-            return rowsAffected > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            Common.close(pStmt);
-            Common.close(conn);
-        }
-    }
-    // MemberDAO 클래스에 findByUsername 메서드 추가
-    public MemberDTO findId(String id) {
-        try {
-            conn = Common.getConnection();
-            String sql = "SELECT * FROM MEMBER WHERE ID = ?";
-            pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, id);
-            rs = pStmt.executeQuery();
-            if (rs.next()) {
-                MemberDTO member = new MemberDTO();
-                member.setId(rs.getString("ID"));
-                member.setPassword(rs.getString("PASSWORD"));
-                member.setName(rs.getString("NAME"));
-                member.setEmail(rs.getString("EMAIL"));
-                member.setTel(rs.getString("TEL"));
-                member.setCash(rs.getInt("CASH"));
-                String role = findRoleById(id);
-                member.setRole(role);
-                return member;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Common.close(rs);
-            Common.close(pStmt);
-            Common.close(conn);
-        }
-        return null;
-    }
-    public String findRoleById(String id) {
-        try {
-            conn = Common.getConnection();
-            String sql = "SELECT AUTH FROM MEMBER WHERE ID = ?";
-            pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, id);
-            rs = pStmt.executeQuery();
-            if (rs.next()) {
-                int auth = rs.getInt("AUTH"); // 사용자의 권한 정보를 가져옴
-                return auth == 0 ? "USER" : "ADMIN"; // 권한 정보를 반환
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Common.close(rs);
-            Common.close(pStmt);
-            Common.close(conn);
-        }
-        return null;
-    }
 
     // 조영준
     // 정보 조회
