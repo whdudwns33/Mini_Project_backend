@@ -69,6 +69,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/check-login").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/users/signup").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/api//send-email").permitAll() // 이메일 엔드포인트 허용
+                .antMatchers("/users/logout/**").permitAll() // 로그아웃 경로에 대한 접근 권한 설정**
+                .antMatchers("/users/member/**").permitAll() // 마이페이지 정보 조회 경로에 대한 접근 권한 설정**
+                .antMatchers("/users/checkInfo/**").permitAll() // 중복체크 경로에 대한 접근 권한 설정**
+                .antMatchers("/users/updateId/**").permitAll() // 아이디업데이트 경로에 대한 접근 권한 설정**
+                .antMatchers("/users/updatePw/**").permitAll() // 비밀번호업데이트 경로에 대한 접근 권한 설정**
+                .antMatchers("/users/delete/**").permitAll() // 삭제 경로에 대한 접근 권한 설정**
+                .antMatchers("/users/charge/**").permitAll() // 금액충전 경로에 대한 접근 권한 설정**
                 .antMatchers("/api//verify-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/book/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
                 .antMatchers("/books/**").permitAll() // **/book 경로에 대한 접근 권한 설정**

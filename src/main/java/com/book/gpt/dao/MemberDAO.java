@@ -35,27 +35,31 @@ public class MemberDAO {
     private ResultSet rs = null;
     private PreparedStatement pStmt = null;
 
-
     // 조영준
     // 정보 조회
     public List<MemberDTO> memberInfo(String getId) {
         List<MemberDTO> list = new ArrayList<>();
-        String sql = "SELECT NAME, EMAIL, TEL, CASH FROM MEMBER WHERE ID = ?";
+        String sql = "SELECT * FROM MEMBER WHERE ID = ?";
         try (Connection conn = Common.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, getId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
+                    String id = rs.getString("ID");
+                    String pw = rs.getString("PASSWORD");
                     String name = rs.getString("NAME");
                     String email = rs.getString("EMAIL");
                     String tel = rs.getString("TEL");
                     int cash = rs.getInt("CASH");
 
                     MemberDTO dto = new MemberDTO();
+                    dto.setId(id);
+                    dto.setPassword(pw);
                     dto.setName(name);
                     dto.setEmail(email);
                     dto.setTel(tel);
                     dto.setCash(cash);
+                    dto.setRole("ROLE_USER");
                     list.add(dto);
                 }
             }
@@ -263,6 +267,5 @@ public class MemberDAO {
         }
         return isData;
     }
-
 
 }

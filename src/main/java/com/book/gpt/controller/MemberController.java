@@ -155,6 +155,16 @@ public class MemberController {
         System.out.println("id : " + id);
         MemberDAO dao = new MemberDAO();
         List<MemberDTO> list = dao.memberInfo(id);
+        for (MemberDTO member : list) {
+            System.out.println("Id: " + member.getId());
+            System.out.println("Password: " + member.getPassword());
+            System.out.println("Name: " + member.getName());
+            System.out.println("Email: " + member.getEmail());
+            System.out.println("Tel: " + member.getTel());
+            System.out.println("Cash: " + member.getCash());
+            System.out.println("Role: " + member.getRole());
+            System.out.println("-----------------------------");
+        }
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
     // 입력 받은 이름, 아이디, 비밀번호, 이메일로 정보 조회
