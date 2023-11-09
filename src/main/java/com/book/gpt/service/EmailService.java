@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-@Service
+@Service("serviceEmail")
 public class EmailService {
     private final JavaMailSender emailSender;
     private static final Map<String, String> emailVerificationCodes = new HashMap<>();

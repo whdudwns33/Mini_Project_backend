@@ -2,13 +2,15 @@ package com.book.gpt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor // 기본 생성자는 제외
+@NoArgsConstructor // 기본 생성자
 public class BookDTO {
     private int id;
     private String title;

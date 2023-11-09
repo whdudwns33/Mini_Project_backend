@@ -1,10 +1,12 @@
 package com.book.gpt.controller;
 
+// import com.book.gpt.dao.BookDAO;
 import com.book.gpt.dto.BookDTO;
 import com.book.gpt.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+// import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,11 +50,30 @@ public class BookController {
         return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
+    // @DeleteMapping, @GetMapping, @PutMapping이 같은 주소값을 가지어도,
+    // http에서는 요청 메서드 (get, post, put, delete)과 요청 url을 조합하여 서로 다른 요청을 구분하기에,
+    // 같은 주소를 가지어도 메서드가 다르다면 다른 요청이다.
     @DeleteMapping("/admin/{id}")
+    // ResponseEntity : 스프링에서 http의 응답을 표현하는 클래스
     public ResponseEntity<Void> deleteBook(@PathVariable int id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<BookDTO> updateBook(@PathVariable int id, @RequestBody BookDTO bookDTO) {
+        return bookService.updateBook(id, bookDTO)
+                .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<BookDTO> findBook(@PathVariable int id) {
+        return bookService.findBook(id)
+                .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 }
 
 

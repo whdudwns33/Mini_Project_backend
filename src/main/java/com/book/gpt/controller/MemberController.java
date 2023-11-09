@@ -2,9 +2,9 @@ package com.book.gpt.controller;
 
 import com.book.gpt.JWT.JwtAuthorizationFilter;
 import com.book.gpt.dao.MemberDAO;
+import com.book.gpt.dao.MemberDAO2;
 import com.book.gpt.dto.MemberDTO;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class MemberController {
     @Autowired
     private JwtAuthorizationFilter jwtAuthorizationFilter;
     @Autowired
-    private MemberDAO dao;   // Add this line
+    private MemberDAO2 dao;   // Add this line
 
     @Autowired
     private PasswordEncoder passwordEncoder;   // Add this line
@@ -41,7 +41,7 @@ public class MemberController {
         String id = loginData.get("id");
         String pwd = loginData.get("password");
 
-        MemberDTO user = dao.findId(id);
+//        MemberDTO user = dao.findId(id);
 
 
         boolean loginResult = dao.loginCheck(id, pwd);
@@ -49,7 +49,7 @@ public class MemberController {
         if (loginResult) {
             // 로그인 성공 시 토큰 생성
             String role = dao.findRoleById(id); // 사용자의 권한 정보를 가져옴
-
+            System.out.println(role);
             String token = jwtAuthorizationFilter.generateToken(id, role);
             // 클라이언트에게 토큰 반환
             return new ResponseEntity<>(token, HttpStatus.OK);
@@ -77,13 +77,18 @@ public class MemberController {
         boolean regResult = false;
 
         // 비밀번호를 해싱해서 저장
-        String plainPassword = memberDTO.getPassword();
-        memberDTO.setPassword(plainPassword);
+        String plainPassword =  memberDTO.getPassword();
+        memberDTO.setPassword(dao.hashPassword(plainPassword)); // 해싱된 비밀번호를 저장
+
 
         if (dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel())) {
             // 회원 가입을 수행
+            memberDTO.setName("user");
+            memberDTO.setCash(0);
+            memberDTO.getProfileUrl();
             regResult = dao.signup(memberDTO);
-            System.out.println("회원가입");
+            memberDTO.setRole("ROLE_USER");
+            System.out.println(memberDTO.getRole());
         } else {
             System.out.println("중복된 아이디, 이메일, 전화 번호가 존재합니다 ");
         }
@@ -166,7 +171,7 @@ public class MemberController {
         String newId = updateId.get("newId");
         MemberDAO dao = new MemberDAO();
         boolean isTrue = dao.modifyId(currentId, newId);
-        System.out.println(isTrue);
+        System.out.println("아이디 최종 변경" + isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
     // 비밀번호 변경

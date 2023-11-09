@@ -3,10 +3,16 @@ package com.book.gpt.dao;
 import com.book.gpt.dto.BookDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class BookDAO {
@@ -83,5 +89,46 @@ public class BookDAO {
         } catch (DataAccessException e) {
             throw new RuntimeException("책을 삭제하는 데 실패했습니다.", e);
         }
+    }
+
+    public Optional<BookDTO> findBook(int id) {
+        String sql = "SELECT * FROM book WHERE id = ?";
+        try {
+            BookDTO book = jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(BookDTO.class));
+            return Optional.ofNullable(book);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<BookDTO> updateBook(int id, BookDTO bookDTO) {
+        String sql = "UPDATE book SET title = ?, author = ?, publisher = ?, genre = ?, image_url = ?, content_url = ?, summary = ?, price = ?, publish_year = ? WHERE id = ?";
+        jdbcTemplate.update(sql, bookDTO.getTitle(), bookDTO.getAuthor(), bookDTO.getPublisher(), bookDTO.getGenre(), bookDTO.getImageUrl(), bookDTO.getContentUrl(), bookDTO.getSummary(),
+                bookDTO.getPrice(), bookDTO.getPublishYear(), id);
+        return findBook(id);
+    }
+    // 길종환
+    public BookDTO getBookInfo(int bookId) {
+        String sql = "SELECT * FROM Book WHERE ID = ?";
+
+        return jdbcTemplate.queryForObject(sql, new RowMapper<BookDTO>() {
+            @Override
+            public BookDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new BookDTO(
+                        rs.getInt("ID"),
+                        rs.getString("TITLE"),
+                        rs.getString("AUTHOR"),
+                        rs.getString("PUBLISHER"),
+                        rs.getString("GENRE"),
+                        rs.getString("IMAGE_URL"),
+                        rs.getString("CONTENT_URL"),
+                        rs.getString("SUMMARY"),
+                        rs.getInt("PRICE"),
+                        rs.getDate("PUBLISH_YEAR"),
+                        rs.getDate("ENTRY_TIME"),
+                        rs.getInt("PURCHASE_COUNT")
+                );
+            }
+        }, bookId);
     }
 }
