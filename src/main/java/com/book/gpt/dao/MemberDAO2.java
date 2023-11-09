@@ -14,10 +14,10 @@ import java.util.Objects;
 
 
 @Repository
-public class MemberDAO_2 {
+public class MemberDAO2 {
     private final JdbcTemplate jdbcTemplate;
     @Autowired
-    public MemberDAO_2(DataSource dataSource) {
+    public MemberDAO2(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

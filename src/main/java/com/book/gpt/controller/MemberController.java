@@ -2,7 +2,7 @@ package com.book.gpt.controller;
 
 import com.book.gpt.JWT.JwtAuthorizationFilter;
 import com.book.gpt.dao.MemberDAO;
-import com.book.gpt.dao.MemberDAO_2;
+import com.book.gpt.dao.MemberDAO2;
 import com.book.gpt.dto.MemberDTO;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -30,7 +30,7 @@ public class MemberController {
     @Autowired
     private JwtAuthorizationFilter jwtAuthorizationFilter;
     @Autowired
-    private MemberDAO_2 dao;   // Add this line
+    private MemberDAO2 dao;   // Add this line
 
     @Autowired
     private PasswordEncoder passwordEncoder;   // Add this line
@@ -41,7 +41,7 @@ public class MemberController {
         String id = loginData.get("id");
         String pwd = loginData.get("password");
 
-        MemberDTO user = dao.findId(id);
+//        MemberDTO user = dao.findId(id);
 
 
         boolean loginResult = dao.loginCheck(id, pwd);

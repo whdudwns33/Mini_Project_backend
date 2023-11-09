@@ -1,6 +1,6 @@
 package com.book.gpt.JWT;
 
-import com.book.gpt.dao.MemberDAO_2;
+import com.book.gpt.dao.MemberDAO2;
 import com.book.gpt.dto.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     @Autowired
-    private MemberDAO_2 memberDAO;
+    private MemberDAO2 memberDAO;
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         MemberDTO user = memberDAO.findId(id);
