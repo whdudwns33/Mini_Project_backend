@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api//verify-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/book/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
                 .antMatchers("/books/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
-                .antMatchers("/cart/**").permitAll() // **/cart 경로에 대한 접근 권한 설정**
+                .antMatchers("/CartPage/**").permitAll() // **/cart 경로에 대한 접근 권한 설정**
                 .antMatchers("/purchase/**").permitAll()
                 .antMatchers("/users/**").hasRole("USER") // USER 권한을 가진 사용자만 접근 허용
                 .antMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한을 가진 사용자만 접근 허용
