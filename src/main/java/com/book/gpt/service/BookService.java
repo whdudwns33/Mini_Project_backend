@@ -12,6 +12,8 @@ public class BookService {
 
     @Autowired
     private BookDAO bookDAO;
+    // id를 기준으로 책을 read 하는 메서드 2023/11/07
+    public BookDTO getBookByID(int id) {return bookDAO.findBookById(id); }
 
     public List<BookDTO> getAllBooks() {
         return bookDAO.findAllBooks();

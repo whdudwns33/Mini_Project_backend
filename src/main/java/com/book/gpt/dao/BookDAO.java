@@ -37,6 +37,30 @@ public class BookDAO {
         }
     }
 
+    // ID를 기준으로 특정 책에 대한 데이터를 쿼리 2023/11/07 정벼리
+    public BookDTO findBookById(int id) {
+        String sql = "SELECT * FROM BOOK WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+                    new BookDTO(
+                            rs.getInt("id"), // ID 필드 추가
+                            rs.getString("title"),
+                            rs.getString("author"),
+                            rs.getString("publisher"),
+                            rs.getString("genre"),
+                            rs.getString("image_url"),
+                            rs.getString("content_url"),
+                            rs.getString("summary"),
+                            rs.getInt("price"),
+                            rs.getDate("publish_year"),
+                            rs.getDate("entry_time"),
+                            rs.getInt("purchase_count")
+                    ));
+        } catch (DataAccessException e) {
+            throw new RuntimeException("ID에 해당하는 책 정보를 조회하는 데 실패했습니다.", e);
+        }
+    }
+
     // 새로운 책 정보를 데이터베이스에 저장하는 메소드
     public BookDTO save(BookDTO book) {
         String sql = "INSERT INTO BOOK (title, author, publisher, genre, image_url, content_url, summary, price, publish_year, entry_time, purchase_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

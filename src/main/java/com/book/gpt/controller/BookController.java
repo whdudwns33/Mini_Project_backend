@@ -20,6 +20,20 @@ public class BookController {
     @Autowired // BookService를 이 클래스에 주입합니다.
     private BookService bookService;
 
+    // ID로 책 조회 2023/11/07 정벼리
+    @GetMapping("/{id}")
+    public ResponseEntity<BookDTO> getBookById(@PathVariable int id) {
+        try {
+            BookDTO book = bookService.getBookByID(id);
+            return ResponseEntity.ok(book);
+        } catch (Exception e) {
+           // 데이터가 조회되지 않았을때 발생하는 에러를 처리하기 위한 예외처리
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
     @GetMapping("/admin")
     public List<BookDTO> getAllBooks() {
         return bookService.getAllBooks();
