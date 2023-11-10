@@ -77,7 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/CartPage/**").permitAll() // **/cart 경로에 대한 접근 권한 설정**
                 .antMatchers("/PurchasePage/**").permitAll()
                 .antMatchers("/users/**").permitAll()
-                .antMatchers("/users/**").hasRole("USER") // USER 권한을 가진 사용자만 접근 허용
                 .antMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한을 가진 사용자만 접근 허용
                 .anyRequest().authenticated(); // 다른 모든 요청은 인증이 필요
     }
