@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -108,6 +109,11 @@ public class BookDAO {
         return findBook(id);
     }
     // 길종환
+    @Autowired
+    public BookDAO(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     public BookDTO getBookInfo(int bookId) {
         String sql = "SELECT * FROM Book WHERE ID = ?";
 
@@ -130,5 +136,39 @@ public class BookDAO {
                 );
             }
         }, bookId);
+    }
+
+    public Boolean checkPurchase(String memberId, int bookId) {
+        String sql = "SELECT COUNT(*) FROM BUY WHERE MEMBER_ID = ? AND BOOK_ID = ?";
+
+        int count = jdbcTemplate.queryForObject(sql, new Object[]{memberId, bookId}, Integer.class);
+
+        return count > 0;
+    }
+    public Boolean purchaseBook(String memberId, int bookId, int price) {
+        try {
+            String checkCashSql = "SELECT cash FROM MEMBER WHERE ID = ?";
+            int cash = jdbcTemplate.queryForObject(checkCashSql, new Object[]{memberId}, Integer.class);
+
+            if (cash >= price) {
+                String updateCashSql = "UPDATE MEMBER SET cash = cash - ? WHERE ID = ?";
+                jdbcTemplate.update(updateCashSql, price, memberId);
+
+                String insertPurchaseSql = "INSERT INTO BUY (MEMBER_ID, BOOK_ID) VALUES (?, ?)";
+                jdbcTemplate.update(insertPurchaseSql, memberId, bookId);
+
+                // 책의 PURCHASE_COUNT를 증가
+                String updatePurchaseCountSql = "UPDATE BOOK SET PURCHASE_COUNT = PURCHASE_COUNT + 1 WHERE ID = ?";
+                jdbcTemplate.update(updatePurchaseCountSql, bookId);
+
+                System.out.println(cash);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
