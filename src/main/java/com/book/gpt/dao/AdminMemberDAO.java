@@ -17,7 +17,7 @@ public class AdminMemberDAO {
 
     // 조회
     public List<MemberDTO> findAllMembers() {
-        String sql = "SELECT * FROM MEMBER";
+        String sql = "SELECT * FROM MEMBER ORDER BY ID ASC";
         try {
             return jdbcTemplate.query(sql, (rs, rowNum) ->
                     new MemberDTO(

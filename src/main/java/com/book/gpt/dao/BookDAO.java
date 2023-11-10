@@ -21,7 +21,7 @@ public class BookDAO {
     private JdbcTemplate jdbcTemplate;
 
     public List<BookDTO> findAllBooks() {
-        String sql = "SELECT * FROM BOOK";
+        String sql = "SELECT * FROM BOOK ORDER BY ID ASC";
         try {
             return jdbcTemplate.query(sql, (rs, rowNum) ->
                     new BookDTO(
