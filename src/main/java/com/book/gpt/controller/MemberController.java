@@ -72,34 +72,30 @@ public class MemberController {
 
 
 
-    @PostMapping("/signup/check-duplicate")
-    public ResponseEntity<Boolean> checkDuplicate(@RequestBody MemberDTO memberDTO) {
-        boolean isDuplicate = dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel());
-
-        if (isDuplicate) {
-            System.out.println("중복된 아이디, 이메일, 전화 번호가 존재합니다 ");
-        }
-
-        return new ResponseEntity<>(!isDuplicate, HttpStatus.OK);
-    }
-
     @PostMapping("/signup")
     public ResponseEntity<Boolean> memberSignup(@RequestBody MemberDTO memberDTO) {
+        boolean regResult = false;
+
         // 비밀번호를 해싱해서 저장
         String plainPassword =  memberDTO.getPassword();
         memberDTO.setPassword(dao.hashPassword(plainPassword)); // 해싱된 비밀번호를 저장
 
-        // 회원 가입을 수행
-        memberDTO.setName("user");
-        memberDTO.setCash(0);
-        memberDTO.getProfileUrl();
-        boolean regResult = dao.signup(memberDTO);
-        memberDTO.setRole("ROLE_USER");
-        System.out.println(memberDTO.getRole());
+
+        if (dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel())) {
+            // 회원 가입을 수행
+            memberDTO.setName("user");
+            memberDTO.setCash(0);
+            memberDTO.getProfileUrl();
+            regResult = dao.signup(memberDTO);
+            memberDTO.setRole("ROLE_USER");
+            System.out.println(memberDTO.getRole());
+        } else {
+            System.out.println("중복된 아이디, 이메일, 전화 번호가 존재합니다 ");
+        }
 
         return new ResponseEntity<>(regResult, HttpStatus.OK);
-    }
 
+    }
 
 
 
@@ -197,6 +193,15 @@ public class MemberController {
         MemberDAO dao = new MemberDAO();
         boolean isTrue = dao.modifyPw(currentPw, newPw);
         System.out.println(isTrue);
+        return new ResponseEntity<>(isTrue, HttpStatus.OK);
+    }
+    @PostMapping("/updateName")
+    public ResponseEntity<Boolean> updateName (@RequestBody Map<String, String> updateName) {
+        String currentName = updateName.get("currentName");
+        String newName = updateName.get("newName");
+        MemberDAO dao = new MemberDAO();
+        boolean isTrue = dao.modifyName(currentName, newName);
+        System.out.println("이름 변경 체크 :" + isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
     // 정보 삭제, 회원탈퇴

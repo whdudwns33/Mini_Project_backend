@@ -215,33 +215,94 @@ public class MemberDAO {
         return isData;
     }
 
+    public boolean modifyName( String currentName, String newName) {
+        boolean isData = false;
+        try {
+            conn = Common.getConnection();
+            // 이름 변경을 위한 SQL 쿼리를 작성합니다.
+            String updateSql = "UPDATE MEMBER SET NAME = ? WHERE NAME = ?";
+            PreparedStatement pstmt = conn.prepareStatement(updateSql);
+            pstmt.setString(1, newName);
+            pstmt.setString(2, currentName);
+            System.out.println(newName);
+            System.out.println(currentName);
+            // 업데이트 쿼리를 실행합니다.
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                isData = true;
+                System.out.println("이름 변경 완료");
+            } else {
+                isData = false;
+                System.out.println("이름 변경 실패");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isData;
+    }
+
+
     // 삭제
     // 문제 점: try catch 구문의 바깥쪽에 선언된 boolean isData = false;
     // try catch 구문안에서 값을 변화 시키면 변화하지 않음?
-    public boolean deleteMember (String getId) {
-        boolean isData;
+    public boolean deleteMember(String memberId) {
+        boolean isData = false;
         int rowsUpdated = 0;
         try {
             conn = Common.getConnection();
             String sql = "DELETE FROM MEMBER WHERE ID = ?";
             pStmt = conn.prepareStatement(sql);
-            pStmt.setString(1, getId);
-            rowsUpdated = pStmt.executeUpdate(); // pStmt.executeUpdate()를 호출한 후에 리소스를 닫습니다.
+            pStmt.setString(1, memberId);
+            rowsUpdated = pStmt.executeUpdate();
+
+            // Member 삭제 후에 관련된 Cart와 Buy 데이터도 삭제
+            deleteCart(memberId);
+            deleteBuy(memberId);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            Common.close(pStmt);
+            Common.close(conn);
         }
-        Common.close(pStmt);
-        Common.close(conn);
-
         if (rowsUpdated == 1) {
             isData = true;
             System.out.println("삭제 완료: " + rowsUpdated);
         } else {
-            isData = false;
             System.out.println("삭제 실패: " + rowsUpdated);
         }
         return isData;
     }
+    // 카트 삭제
+    public void deleteCart(String memberId) {
+        try {
+            conn = Common.getConnection();
+            String sql = "DELETE FROM CART WHERE MEMBER_ID = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, memberId);
+            pStmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Common.close(pStmt);
+            Common.close(conn);
+        }
+    }
+    // 구매 삭제
+    public void deleteBuy(String memberId) {
+        try {
+            conn = Common.getConnection();
+            String sql = "DELETE FROM BUY WHERE MEMBER_ID = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, memberId);
+            pStmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Common.close(pStmt);
+            Common.close(conn);
+        }
+    }
+
 
     public boolean chargingCash (String getId, int getCash) {
         boolean isData = false;
