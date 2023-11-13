@@ -229,5 +229,14 @@ public class MemberController {
         System.out.println("충전 여부" + isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
-
+    // 이미지 업로드
+    @PostMapping("/setImage")
+    public ResponseEntity<Boolean> setImage (@RequestBody Map<String, String> setImageUrl) {
+        String getId = setImageUrl.get("id");
+        String getUrl = setImageUrl.get("url");
+        MemberDAO dao = new MemberDAO();
+        boolean isTrue = dao.setImageUrl(getId, getUrl);
+        System.out.println(isTrue);
+        return new ResponseEntity<>(isTrue, HttpStatus.OK);
+    }
 }
