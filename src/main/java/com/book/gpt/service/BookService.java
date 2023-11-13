@@ -4,6 +4,7 @@ import com.book.gpt.dao.BookDAO;
 import com.book.gpt.dto.BookDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,15 @@ public class BookService {
 
     public Optional<BookDTO> findBook(int id) {
         return bookDAO.findBook(id);
+    }
+
+    @Transactional(readOnly = true)
+    public BookDTO getBookByTitleAndAuthor(String title, String author) {
+        return bookDAO.findByTitleAndAuthor(title, author);
+    }
+
+    public boolean isBookBoughtByUser(String memberId, int bookId) {
+        return bookDAO.isBookBoughtByUser(memberId, bookId);
     }
 }
 

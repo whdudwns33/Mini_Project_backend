@@ -145,6 +145,7 @@ public class BookDAO {
 
         return count > 0;
     }
+
     public Boolean purchaseBook(String memberId, int bookId, int price) {
         try {
             String checkCashSql = "SELECT cash FROM MEMBER WHERE ID = ?";
@@ -171,4 +172,18 @@ public class BookDAO {
             return null;
         }
     }
+
+    public BookDTO findByTitleAndAuthor(String title, String author) {
+        String query = "SELECT * FROM book WHERE title = ? AND author = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{title, author}, new BookRowMapper());
+    }
+
+    public boolean isBookBoughtByUser(String memberId, int bookId) {
+        String sql = "SELECT COUNT(*) FROM buy WHERE member_id = ? AND book_id = ?";
+        // int는 null 값 처리 불가, integer은 null값을 가질 수 있다.
+        // sql, ? 값들을 배열로 반환, 반환할 객체의 타입을 integer로 지정
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{memberId, bookId}, Integer.class);
+        return (count != null && count > 0);
+    }
+
 }
