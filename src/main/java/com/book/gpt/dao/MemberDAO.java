@@ -1,28 +1,8 @@
 package com.book.gpt.dao;
 
-import com.book.gpt.JWT.JwtAuthorizationFilter;
 import com.book.gpt.common.Common;
 import com.book.gpt.dto.MemberDTO;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import javax.crypto.SecretKey;
-import javax.servlet.http.HttpServletRequest;
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.sql.*;
 import java.util.*;
 

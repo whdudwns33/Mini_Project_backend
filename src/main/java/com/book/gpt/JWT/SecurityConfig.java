@@ -76,7 +76,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/books/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
                 .antMatchers("/CartPage/**").permitAll() // **/cart 경로에 대한 접근 권한 설정**
                 .antMatchers("/PurchasePage/**").permitAll()
+                .antMatchers("/buy/**").permitAll()
                 .antMatchers("/users/**").permitAll()
+                .antMatchers("/SearchResultPage/**").permitAll()
                 .anyRequest().authenticated(); // 다른 모든 요청은 인증이 필요
     }
 

@@ -312,4 +312,17 @@ public class MemberController {
         System.out.println(isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
+
+    @PostMapping("/loginAuthCheck")
+    public ResponseEntity<String> loginAuthCheck(@RequestBody Map<String, String> user) {
+        String id = user.get("id");
+        String password = user.get("password");
+        String role = dao.getRoleByIdAndPassword(id, password);
+
+        if (role != null) {
+            return new ResponseEntity<>(role, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

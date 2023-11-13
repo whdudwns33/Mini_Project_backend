@@ -2,6 +2,7 @@ package com.book.gpt.dao;
 
 import com.book.gpt.dto.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -115,5 +116,14 @@ public class MemberDAO2 {
     public boolean kakaoSignup(MemberDTO member) {
         String sql = "INSERT INTO MEMBER(ID, NAME, EMAIL, PASSWORD, TEL, CASH) VALUES(?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql, member.getId(), "user", "user.kakao.com", "abc", "010-0000-0000", 0) > 0;
+    }
+
+    public String getRoleByIdAndPassword(String id, String password) {
+        String sql = "SELECT auth FROM member WHERE id = ? AND password = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{id, password}, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }
