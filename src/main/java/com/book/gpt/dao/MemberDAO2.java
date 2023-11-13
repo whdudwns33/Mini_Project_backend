@@ -16,7 +16,6 @@ import java.util.Objects;
 @Repository
 public class MemberDAO2 {
     private final JdbcTemplate jdbcTemplate;
-
     @Autowired
     public MemberDAO2(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -69,10 +68,12 @@ public class MemberDAO2 {
     }
 
 
+
     public MemberDTO findId(String id) {
         String sql = "SELECT * FROM MEMBER WHERE ID = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, memberRowMapper());
     }
+
 
     private RowMapper<MemberDTO> memberRowMapper() {
         return (rs, rowNum) -> {
@@ -89,17 +90,30 @@ public class MemberDAO2 {
         };
     }
 
+    public String findRoleById(String id) {
+        String sql = "SELECT AUTH FROM MEMBER WHERE ID = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
+            String auth = rs.getString("AUTH");
+            return auth.equals("0") ? "ROLE_USER" : "ROLE_ADMIN";
+        });
+    }
     public MemberDTO getUserInfo(String id) {
         String sql = "SELECT * FROM MEMBER WHERE ID = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, memberRowMapper());
     }
 
-    public String findRoleById(String id) {
-        String sql = "SELECT AUTH FROM MEMBER WHERE ID = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
-            String auth = rs.getString("AUTH");
-            System.out.println(auth);
-            return Objects.equals(auth, "0") ? "ROLE_USER" : "ROLE_ADMIN";
+    public boolean kakaoSignupCheck(String kakaoNickname) {
+        String sql = "SELECT * FROM MEMBER WHERE ID = ?";
+        List<MemberDTO> results = jdbcTemplate.query(sql, new Object[]{kakaoNickname}, (rs, rowNum) -> {
+            MemberDTO member = new MemberDTO();
+            member.setId(rs.getString("ID"));
+            return member;
         });
+        return !results.isEmpty();
+    }
+
+    public boolean kakaoSignup(MemberDTO member) {
+        String sql = "INSERT INTO MEMBER(ID, NAME, EMAIL, PASSWORD, TEL, CASH) VALUES(?, ?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, member.getId(), "user", "user.kakao.com", "abc", "010-0000-0000", 0) > 0;
     }
 }
