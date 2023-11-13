@@ -29,8 +29,9 @@ public class AdminMemberDAO {
                             rs.getInt("cash"),
                             rs.getInt("auth"),
                             rs.getString("profile_url"),
-                            null, // authorities
-                            null // role
+                            null,
+                            null,
+                            null
                     ));
         } catch (DataAccessException e) {
             throw new RuntimeException("회원 정보를 조회하는 데 실패했습니다.", e);

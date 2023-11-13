@@ -21,8 +21,8 @@ public class MemberDTO {
     private int cash;
     private int auth;
     private String profileUrl = null; // 프로필 이미지 URL
+
     private String loginType;
     private String role;
-
     private Collection<? extends GrantedAuthority> authorities; // 권한 정보
 }
