@@ -13,7 +13,7 @@ import java.util.List;
 // Spring Boot의 경우
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/purchase")
+@RequestMapping("/PurchasePage")
 public class ReviewController {
 
     @Autowired

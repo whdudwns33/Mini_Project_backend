@@ -16,6 +16,7 @@ import java.util.Objects;
 @Repository
 public class MemberDAO2 {
     private final JdbcTemplate jdbcTemplate;
+
     @Autowired
     public MemberDAO2(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -68,7 +69,6 @@ public class MemberDAO2 {
     }
 
 
-
     public MemberDTO findId(String id) {
         String sql = "SELECT * FROM MEMBER WHERE ID = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, memberRowMapper());
@@ -89,6 +89,11 @@ public class MemberDAO2 {
         };
     }
 
+    public MemberDTO getUserInfo(String id) {
+        String sql = "SELECT * FROM MEMBER WHERE ID = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, memberRowMapper());
+    }
+
     public String findRoleById(String id) {
         String sql = "SELECT AUTH FROM MEMBER WHERE ID = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
@@ -97,5 +102,4 @@ public class MemberDAO2 {
             return Objects.equals(auth, "0") ? "ROLE_USER" : "ROLE_ADMIN";
         });
     }
-
 }

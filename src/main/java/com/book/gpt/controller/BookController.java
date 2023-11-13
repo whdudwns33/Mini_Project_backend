@@ -74,6 +74,15 @@ public class BookController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/isbookexist")
+    public BookDTO getBook(@RequestParam String title, @RequestParam String author) {
+        return bookService.getBookByTitleAndAuthor(title, author);
+    }
+
+    @GetMapping("/isbookbought")
+    public boolean isBookBought(@RequestParam String memberId, @RequestParam int bookId) {
+        return bookService.isBookBoughtByUser(memberId, bookId);
+    }
 }
 
 

@@ -25,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 public class MemberController {
+
     @Value("${jwt.secret}") // application.properties에서 설정 가져오기
     private String jwtSecretKey;
     @Autowired
@@ -70,33 +71,39 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberDTO> getUserInfo(@PathVariable("id") String id) {
+        MemberDTO userInfo = dao.getUserInfo(id);
+        return new ResponseEntity<>(userInfo, HttpStatus.OK);
+    }
 
+    @PostMapping("/signup/check-duplicate")
+    public ResponseEntity<Boolean> checkDuplicate(@RequestBody MemberDTO memberDTO) {
+        boolean isDuplicate = dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel());
+
+        if (isDuplicate) {
+            System.out.println("중복된 아이디, 이메일, 전화 번호가 존재합니다 ");
+        }
+
+        return new ResponseEntity<>(!isDuplicate, HttpStatus.OK);
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<Boolean> memberSignup(@RequestBody MemberDTO memberDTO) {
-        boolean regResult = false;
-
         // 비밀번호를 해싱해서 저장
         String plainPassword =  memberDTO.getPassword();
         memberDTO.setPassword(dao.hashPassword(plainPassword)); // 해싱된 비밀번호를 저장
 
-
-        if (dao.signupCheck(memberDTO.getId(), memberDTO.getEmail(), memberDTO.getTel())) {
-            // 회원 가입을 수행
-            memberDTO.setName("user");
-            memberDTO.setCash(0);
-            memberDTO.getProfileUrl();
-            regResult = dao.signup(memberDTO);
-            memberDTO.setRole("ROLE_USER");
-            System.out.println(memberDTO.getRole());
-        } else {
-            System.out.println("중복된 아이디, 이메일, 전화 번호가 존재합니다 ");
-        }
+        // 회원 가입을 수행
+        memberDTO.setName("user");
+        memberDTO.setCash(0);
+        memberDTO.setProfileUrl("https://firebasestorage.googleapis.com/v0/b/mini-project-gpt.appspot.com/o/%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%97%86%EC%9D%8C?alt=media&token=c51e4498-e899-4206-99af-0817bdb38f92");
+        boolean regResult = dao.signup(memberDTO);
+        memberDTO.setRole("ROLE_USER");
+        System.out.println(memberDTO.getRole());
 
         return new ResponseEntity<>(regResult, HttpStatus.OK);
-
     }
-
 
 
     @GetMapping("/check-login")
@@ -147,7 +154,6 @@ public class MemberController {
         String[] parts = token.split("\\.");
         return parts.length == 3;
     }
-
     // 조영준
     // 회원 정보 조회
     @GetMapping("/member")
@@ -155,6 +161,16 @@ public class MemberController {
         System.out.println("id : " + id);
         MemberDAO dao = new MemberDAO();
         List<MemberDTO> list = dao.memberInfo(id);
+        for (MemberDTO member : list) {
+            System.out.println("Id: " + member.getId());
+            System.out.println("Password: " + member.getPassword());
+            System.out.println("Name: " + member.getName());
+            System.out.println("Email: " + member.getEmail());
+            System.out.println("Tel: " + member.getTel());
+            System.out.println("Cash: " + member.getCash());
+            System.out.println("Role: " + member.getRole());
+            System.out.println("-----------------------------");
+        }
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
     // 입력 받은 이름, 아이디, 비밀번호, 이메일로 정보 조회
@@ -185,6 +201,15 @@ public class MemberController {
         System.out.println(isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
+    @PostMapping("/updateName")
+    public ResponseEntity<Boolean> updateName (@RequestBody Map<String, String> updateName) {
+        String currentName = updateName.get("currentName");
+        String newName = updateName.get("newName");
+        MemberDAO dao = new MemberDAO();
+        boolean isTrue = dao.modifyName(currentName, newName);
+        System.out.println("이름 변경 체크 :" + isTrue);
+        return new ResponseEntity<>(isTrue, HttpStatus.OK);
+    }
     // 정보 삭제, 회원탈퇴
     @PostMapping("/delete")
     public ResponseEntity<Boolean> deleteMember (@RequestBody Map<String, String> del) {
@@ -204,5 +229,14 @@ public class MemberController {
         System.out.println("충전 여부" + isTrue);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
-
+    // 이미지 업로드
+    @PostMapping("/setImage")
+    public ResponseEntity<Boolean> setImage (@RequestBody Map<String, String> setImageUrl) {
+        String getId = setImageUrl.get("id");
+        String getUrl = setImageUrl.get("url");
+        MemberDAO dao = new MemberDAO();
+        boolean isTrue = dao.setImageUrl(getId, getUrl);
+        System.out.println(isTrue);
+        return new ResponseEntity<>(isTrue, HttpStatus.OK);
+    }
 }
