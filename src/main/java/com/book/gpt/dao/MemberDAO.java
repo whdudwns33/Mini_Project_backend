@@ -51,6 +51,8 @@ public class MemberDAO {
                     String email = rs.getString("EMAIL");
                     String tel = rs.getString("TEL");
                     int cash = rs.getInt("CASH");
+                    String profileUrl = rs.getString("PROFILE_URL");
+                    System.out.println("DAO" + profileUrl);
 
                     MemberDTO dto = new MemberDTO();
                     dto.setId(id);
@@ -60,6 +62,7 @@ public class MemberDAO {
                     dto.setTel(tel);
                     dto.setCash(cash);
                     dto.setRole("ROLE_USER");
+                    dto.setProfileUrl(profileUrl);
                     list.add(dto);
                 }
             }
@@ -325,6 +328,33 @@ public class MemberDAO {
         } else {
             isData = false;
             System.out.println("충전 실패: " + rowsUpdated);
+        }
+        return isData;
+    }
+
+
+    // 이미지 url 저장
+    public boolean setImageUrl (String getId, String getUrl) {
+        boolean isData = false;
+        int rowsUpdated = 0;
+        try {
+            conn = Common.getConnection();
+            String sql = "UPDATE MEMBER SET PROFILE_URL = ? WHERE id = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, getUrl);
+            pStmt.setString(2, getId);
+            rowsUpdated = pStmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        if (rowsUpdated == 1) {
+            isData = true;
+            System.out.println("이미지 업로드 완료: " + rowsUpdated);
+        } else {
+            isData = false;
+            System.out.println("이미지 업로드  실패: " + rowsUpdated);
         }
         return isData;
     }

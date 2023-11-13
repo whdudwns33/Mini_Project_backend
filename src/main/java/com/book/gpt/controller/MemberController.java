@@ -97,7 +97,7 @@ public class MemberController {
         // 회원 가입을 수행
         memberDTO.setName("user");
         memberDTO.setCash(0);
-        memberDTO.getProfileUrl();
+        memberDTO.setProfileUrl("https://firebasestorage.googleapis.com/v0/b/mini-project-gpt.appspot.com/o/%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%97%86%EC%9D%8C?alt=media&token=c51e4498-e899-4206-99af-0817bdb38f92");
         boolean regResult = dao.signup(memberDTO);
         memberDTO.setRole("ROLE_USER");
         System.out.println(memberDTO.getRole());
