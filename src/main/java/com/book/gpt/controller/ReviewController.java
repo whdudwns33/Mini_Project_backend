@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Spring Boot의 경우
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/PurchasePage")
 public class ReviewController {

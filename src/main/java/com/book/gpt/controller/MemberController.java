@@ -246,6 +246,7 @@ public class MemberController {
         }
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
     // 입력 받은 이름, 아이디, 비밀번호, 이메일로 정보 조회
     @GetMapping("/checkInfo")
     public ResponseEntity<Boolean> memberCheck(@RequestParam String name,@RequestParam String id,@RequestParam String pw,@RequestParam String email) {

@@ -15,10 +15,12 @@ public class MemberDAO {
     private ResultSet rs = null;
     private PreparedStatement pStmt = null;
 
-    // 조영준
-    // 정보 조회
+// 정보 조회
     public List<MemberDTO> memberInfo(String getId) {
         List<MemberDTO> list = new ArrayList<>();
+        if (getId == null) {
+            return list;  // getId가 null일 경우 빈 리스트 반환
+        }
         String sql = "SELECT * FROM MEMBER WHERE ID = ?";
         try (Connection conn = Common.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -35,14 +37,14 @@ public class MemberDAO {
                     System.out.println("DAO" + profileUrl);
 
                     MemberDTO dto = new MemberDTO();
-                    dto.setId(id);
-                    dto.setPassword(pw);
-                    dto.setName(name);
-                    dto.setEmail(email);
-                    dto.setTel(tel);
+                    dto.setId(id != null ? id : "");  // 필드값이 null이면 빈 문자열 할당
+                    dto.setPassword(pw != null ? pw : "");
+                    dto.setName(name != null ? name : "");
+                    dto.setEmail(email != null ? email : "");
+                    dto.setTel(tel != null ? tel : "");
                     dto.setCash(cash);
                     dto.setRole("ROLE_USER");
-                    dto.setProfileUrl(profileUrl);
+                    dto.setProfileUrl(profileUrl != null ? profileUrl : "");
                     list.add(dto);
                 }
             }
@@ -51,6 +53,7 @@ public class MemberDAO {
         }
         return list;
     }
+
 
     // 이름~이메일 입력시 존재하는 지 체크
     public boolean memberCheck(String name, String id, String pw, String email) {
