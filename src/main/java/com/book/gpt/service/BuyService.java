@@ -15,4 +15,8 @@ public class BuyService {
     public List<BuyDTO> getBoughtBooks(String memberId) {
         return buyDAO.getBoughtBooks(memberId);
     }
+
+    public void deleteBook(int id) {
+        buyDAO.deleteBook(id);
+    }
 }

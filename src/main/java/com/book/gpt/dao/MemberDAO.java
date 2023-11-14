@@ -3,8 +3,10 @@ package com.book.gpt.dao;
 import com.book.gpt.common.Common;
 import com.book.gpt.dto.MemberDTO;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Repository
@@ -15,7 +17,7 @@ public class MemberDAO {
     private ResultSet rs = null;
     private PreparedStatement pStmt = null;
 
-// 정보 조회
+    // 정보 조회
     public List<MemberDTO> memberInfo(String getId) {
         List<MemberDTO> list = new ArrayList<>();
         if (getId == null) {
@@ -78,7 +80,7 @@ public class MemberDAO {
             }
 
             System.out.println("이름, 이메일, 아이디, 비번 :  2 : " + isChecked);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Common.close(rs);
@@ -89,12 +91,11 @@ public class MemberDAO {
     }
 
 
-
     // 아이디 변경을 위해 중복 체크
     public boolean isIdcheck(String newId) {
         boolean isDuplicate = false;
-        System.out.println("아이디 체크: 1 "+isDuplicate);
-        System.out.println("아이디 체크: 새로운 아이디 : "+newId);
+        System.out.println("아이디 체크: 1 " + isDuplicate);
+        System.out.println("아이디 체크: 새로운 아이디 : " + newId);
 
         try {
             conn = Common.getConnection();
@@ -115,9 +116,9 @@ public class MemberDAO {
     }
 
 
-    public boolean modifyId( String currentId, String newId) {
+    public boolean modifyId(String currentId, String newId) {
         boolean isData = false;
-        System.out.println("아이디 수정: 1 "+isData);
+        System.out.println("아이디 수정: 1 " + isData);
         System.out.println("아이디 수정: 현제 아이디 " + currentId);
         System.out.println("아이디 수정: 새로운 아이디 " + newId);
         try {
@@ -173,7 +174,7 @@ public class MemberDAO {
         return isDup;
     }
 
-    public boolean modifyPw( String currentPw, String newPw) {
+    public boolean modifyPw(String currentPw, String newPw) {
         boolean isData = false;
         try {
             conn = Common.getConnection();
@@ -201,7 +202,7 @@ public class MemberDAO {
         return isData;
     }
 
-    public boolean modifyName( String currentName, String newName) {
+    public boolean modifyName(String currentName, String newName) {
         boolean isData = false;
         try {
             conn = Common.getConnection();
@@ -235,15 +236,14 @@ public class MemberDAO {
         boolean isData = false;
         int rowsUpdated = 0;
         try {
+            // Member 삭제 후에 관련된 Cart와 Buy 데이터도 삭제
+            deleteCart(memberId);
+            deleteBuy(memberId);
             conn = Common.getConnection();
             String sql = "DELETE FROM MEMBER WHERE ID = ?";
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, memberId);
             rowsUpdated = pStmt.executeUpdate();
-
-            // Member 삭제 후에 관련된 Cart와 Buy 데이터도 삭제
-            deleteCart(memberId);
-            deleteBuy(memberId);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -258,6 +258,7 @@ public class MemberDAO {
         }
         return isData;
     }
+
     // 카트 삭제
     public void deleteCart(String memberId) {
         try {
@@ -273,6 +274,7 @@ public class MemberDAO {
             Common.close(conn);
         }
     }
+
     // 구매 삭제
     public void deleteBuy(String memberId) {
         try {
@@ -290,7 +292,7 @@ public class MemberDAO {
     }
 
 
-    public boolean chargingCash (String getId, int getCash) {
+    public boolean chargingCash(String getId, int getCash) {
         boolean isData = false;
         int rowsUpdated = 0;
         try {
@@ -317,7 +319,7 @@ public class MemberDAO {
 
 
     // 이미지 url 저장
-    public boolean setImageUrl (String getId, String getUrl) {
+    public boolean setImageUrl(String getId, String getUrl) {
         boolean isData = false;
         int rowsUpdated = 0;
         try {

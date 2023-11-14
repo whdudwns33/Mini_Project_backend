@@ -21,4 +21,10 @@ public class BuyController {
         List<BuyDTO> boughtBooks = buyService.getBoughtBooks(memberId);
         return new ResponseEntity<>(boughtBooks, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable int id) {
+        buyService.deleteBook(id);
+        return ResponseEntity.noContent().build();
+    }
 }
