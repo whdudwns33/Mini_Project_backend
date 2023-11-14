@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @CrossOrigin("*")
 @RestController
@@ -34,6 +36,22 @@ public class BooksController {
             if (bookDAO != null) {
                 BookDTO book = bookDAO.getBookInfo(bookId);
                 Boolean isPurchased = bookDAO.purchaseBook(memberId, book.getId(), book.getPrice());
+                System.out.println(isPurchased);
+                return ResponseEntity.ok(isPurchased);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    // 여러 책 구매
+    @PostMapping("/purchase/multiple/{memberId}")
+    public ResponseEntity<Boolean> purchaseBooks(@PathVariable String memberId, @RequestBody List<Integer> bookIds) {
+        try {
+            if (bookDAO != null) {
+                Boolean isPurchased = bookDAO.purchaseBooks(memberId, bookIds);
                 System.out.println(isPurchased);
                 return ResponseEntity.ok(isPurchased);
             } else {
