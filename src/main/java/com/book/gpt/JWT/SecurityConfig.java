@@ -69,6 +69,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/check-login").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/users/signup").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/users/signup/**").permitAll() // 로그인 엔드포인트 허용
+                .antMatchers("/users/checkInfo/**").permitAll() //
+                .antMatchers("/users/updateId/**").permitAll() //
+                .antMatchers("/users/updatePw/**").permitAll() //
+                .antMatchers("/users/updateName/**").permitAll() //
+                .antMatchers("/users/delete/**").permitAll() //
+                .antMatchers("/users/charge/**").permitAll() //
                 .antMatchers("/api//send-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/api//verify-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/book/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
