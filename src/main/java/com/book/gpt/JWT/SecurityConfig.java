@@ -64,7 +64,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) // JwtAuthorizationFilter를 UsernamePasswordAuthenticationFilter 전에 추가
                 .authorizeRequests()
+
                 .antMatchers("/public/**").permitAll() // 모든 사용자에게 접근 허용
+                .antMatchers("/").permitAll() // 모든 사용자에게 접근 허용
                 .antMatchers("/users/login").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/users/check-login").permitAll() // 로그인 엔드포인트 허용
                 .antMatchers("/users/signup").permitAll() // 로그인 엔드포인트 허용
@@ -99,7 +101,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.setAllowedOrigins(Arrays.asList("http://192.168.10.8:3000")); // 수정된 부분
         config.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
         config.setAllowedHeaders(Arrays.asList("*"));
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
