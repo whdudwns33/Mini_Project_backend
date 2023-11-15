@@ -75,6 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/updateName/**").permitAll() //
                 .antMatchers("/users/delete/**").permitAll() //
                 .antMatchers("/users/charge/**").permitAll() //
+                .antMatchers("/signup/**").permitAll() //
+
                 .antMatchers("/api//send-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/api//verify-email").permitAll() // 이메일 엔드포인트 허용
                 .antMatchers("/book/**").permitAll() // **/book 경로에 대한 접근 권한 설정**
@@ -94,6 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedOrigins(Arrays.asList("http://192.168.10.8:3000")); // 수정된 부분
         config.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
         config.setAllowedHeaders(Arrays.asList("*"));
 
@@ -101,6 +104,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-
 }

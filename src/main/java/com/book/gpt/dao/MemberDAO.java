@@ -41,9 +41,9 @@ public class MemberDAO {
                     MemberDTO dto = new MemberDTO();
                     dto.setId(id != null ? id : "");  // 필드값이 null이면 빈 문자열 할당
                     dto.setPassword(pw != null ? pw : "");
-                    dto.setName(name != null ? name : "");
+                    dto.setName(maskName(name)); // 마스킹 되는 경우 해당 예외 처리가 이미 발생된 상황
                     dto.setEmail(email != null ? email : "");
-                    dto.setTel(tel != null ? tel : "");
+                    dto.setTel(maskTel(tel)); // 마스킹 되는 경우 해당 예외 처리가 이미 발생된 상황
                     dto.setCash(cash);
                     dto.setRole("ROLE_USER");
                     dto.setProfileUrl(profileUrl != null ? profileUrl : "");
@@ -54,6 +54,21 @@ public class MemberDAO {
             e.printStackTrace();
         }
         return list;
+    }
+    // 이름, 전화번호, 이메일 마스킹
+    // 이름
+    private String maskName(String name) {
+        if (name != null && name.length() > 1) {
+            return name.substring(0, 1) + "*".repeat(name.length() - 1);
+        }
+        return name;
+    }
+    // 전화번호
+    private String maskTel(String tel) {
+        if (tel != null && tel.length() >= 12) {
+            return tel.substring(0, 4) + tel.substring(4, 5) + "***" + tel.substring(8,10) + "***";
+        }
+        return tel;
     }
 
 
