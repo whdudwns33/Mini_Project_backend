@@ -55,7 +55,7 @@ public class MemberDAO {
         }
         return list;
     }
-    // 이름, 전화번호, 이메일 마스킹
+    // 이름, 전화번호 마스킹
     // 이름
     private String maskName(String name) {
         if (name != null && name.length() > 1) {
