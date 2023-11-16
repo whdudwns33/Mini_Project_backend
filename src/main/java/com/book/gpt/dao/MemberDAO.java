@@ -75,6 +75,10 @@ public class MemberDAO {
     // 이름~이메일 입력시 존재하는 지 체크
     public boolean memberCheck(String name, String id, String pw, String email) {
         boolean isChecked = false;
+        if (name == null || id == null || pw == null || email == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isChecked;  // null일 경우 false 반환
+        }
         System.out.println("이름, 이메일, 아이디, 비번 : 1 : " + isChecked);
         try {
             conn = Common.getConnection();
@@ -111,7 +115,10 @@ public class MemberDAO {
         boolean isDuplicate = false;
         System.out.println("아이디 체크: 1 " + isDuplicate);
         System.out.println("아이디 체크: 새로운 아이디 : " + newId);
-
+        if (newId == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isDuplicate;  // null일 경우 false 반환
+        }
         try {
             conn = Common.getConnection();
             String sql = "SELECT COUNT(*) AS count FROM MEMBER WHERE ID = ?";
@@ -136,6 +143,10 @@ public class MemberDAO {
         System.out.println("아이디 수정: 1 " + isData);
         System.out.println("아이디 수정: 현제 아이디 " + currentId);
         System.out.println("아이디 수정: 새로운 아이디 " + newId);
+        if (currentId == null || newId == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isData;  // null일 경우 false 반환
+        }
         try {
             conn = Common.getConnection();
             // 아이디 변경을 위한 SQL 쿼리를 작성합니다.
@@ -164,8 +175,13 @@ public class MemberDAO {
 
     // 비밀번호 중복 체크
     public boolean isPwcheck(String newPw) {
-        // 중복 체크
         boolean isDup = false;
+        // 중복 체크
+        if (newPw == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isDup;  // null일 경우 false 반환
+        }
+
         try {
             conn = Common.getConnection();
             String checkSql = "SELECT COUNT(*) AS count FROM MEMBER WHERE PASSWORD = ?";
@@ -191,6 +207,10 @@ public class MemberDAO {
 
     public boolean modifyPw(String currentPw, String newPw) {
         boolean isData = false;
+        if (currentPw == null || newPw == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isData;  // null일 경우 false 반환
+        }
         try {
             conn = Common.getConnection();
             // 아이디 변경을 위한 SQL 쿼리를 작성합니다.
@@ -219,6 +239,10 @@ public class MemberDAO {
 
     public boolean modifyName(String currentName, String newName) {
         boolean isData = false;
+        if (currentName == null || newName == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isData;  // null일 경우 false 반환
+        }
         try {
             conn = Common.getConnection();
             // 이름 변경을 위한 SQL 쿼리를 작성합니다.
@@ -250,6 +274,10 @@ public class MemberDAO {
     public boolean deleteMember(String memberId) {
         boolean isData = false;
         int rowsUpdated = 0;
+        if (memberId == null) {
+            System.out.println("입력 값이 없습니다.");
+            return isData;  // null일 경우 false 반환
+        }
         try {
             // Member 삭제 후에 관련된 Cart와 Buy 데이터도 삭제
             deleteCart(memberId);
@@ -261,10 +289,10 @@ public class MemberDAO {
             rowsUpdated = pStmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            Common.close(pStmt);
-            Common.close(conn);
         }
+        Common.close(pStmt);
+        Common.close(conn);
+
         if (rowsUpdated == 1) {
             isData = true;
             System.out.println("삭제 완료: " + rowsUpdated);
@@ -284,10 +312,10 @@ public class MemberDAO {
             pStmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            Common.close(pStmt);
-            Common.close(conn);
         }
+        Common.close(pStmt);
+        Common.close(conn);
+
     }
 
     // 구매 삭제
@@ -300,16 +328,20 @@ public class MemberDAO {
             pStmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            Common.close(pStmt);
-            Common.close(conn);
         }
+        Common.close(pStmt);
+        Common.close(conn);
+
     }
 
 
     public boolean chargingCash(String getId, int getCash) {
         boolean isData = false;
         int rowsUpdated = 0;
+        if (getId == null ) {
+            System.out.println("입력 값이 없습니다.");
+            return isData;  // null일 경우 false 반환
+        }
         try {
             conn = Common.getConnection();
             String sql = "UPDATE MEMBER SET CASH = CASH + ? WHERE id = ?";
@@ -337,6 +369,10 @@ public class MemberDAO {
     public boolean setImageUrl(String getId, String getUrl) {
         boolean isData = false;
         int rowsUpdated = 0;
+        if (getId == null || getUrl == null  ) {
+            System.out.println("입력 값이 없습니다.");
+            return isData;  // null일 경우 false 반환
+        }
         try {
             conn = Common.getConnection();
             String sql = "UPDATE MEMBER SET PROFILE_URL = ? WHERE id = ?";
